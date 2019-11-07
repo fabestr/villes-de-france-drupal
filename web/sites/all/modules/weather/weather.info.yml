@@ -1,0 +1,4 @@
+name: Weather
+description: "Mini module API météo"
+type: module
+core: 8.x
