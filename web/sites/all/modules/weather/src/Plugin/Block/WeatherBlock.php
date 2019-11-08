@@ -51,8 +51,16 @@ class WeatherBlock extends BlockBase implements BlockPluginInterface
    */
   public function build()
   {
+    $data = $this->current_weather();
+    //var_dump($data);
+    $idIcon = $data->weather[0]->icon;
+    $icon = "http://openweathermap.org/img/w/" .$idIcon. ".png";
     return array(
-      '#markup'=> 'my weather block',
+      '#theme' => 'weather',
+      '#title' => 'la météo sur: '.$data->name,
+      '#icon' => $icon,
+      '#weather' => $data->weather[0]->main,
+      '#description' => $data->weather[0]->description,
     );
   }
 
@@ -82,7 +90,7 @@ class WeatherBlock extends BlockBase implements BlockPluginInterface
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
     $values = $form_state->getValues();
-    $this->configuration['weather_block_name'] = $values['weather_block_name'];
+    $this->configuration['weather_API_key'] = $values['weather_API_key'];
   }
 
   public function current_weather()
@@ -94,7 +102,7 @@ class WeatherBlock extends BlockBase implements BlockPluginInterface
 
     $output = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&appid='.$apiKey);
     $data =  json_decode($output);
-    //var_dump($data);
+    //dump($data);
 
     return $data;
   }
